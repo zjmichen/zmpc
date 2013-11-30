@@ -2,7 +2,12 @@
 
 from gi.repository import Gtk
 
-win = Gtk.Window()
+class MainWindow(Gtk.Window):
+
+    def __init__(self):
+        Gtk.Window.__init__(self, title="My App")
+
+win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
 Gtk.main()
