@@ -2,13 +2,23 @@
 
 from gi.repository import Gtk
 
-class MainWindow(Gtk.Window):
+class App:
 
     def __init__(self):
-        Gtk.Window.__init__(self, title="My App")
+        builder = Gtk.Builder()
+        builder.add_from_file("main.glade")
+        builder.connect_signals(Handler())
 
-win = MainWindow()
-win.connect("delete-event", Gtk.main_quit)
-win.show_all()
+        self.window = builder.get_object("window1")
+
+    def start(self):
+        self.window.show_all()
+
+class Handler:
+    def onDeleteWindow(self, *args):
+        Gtk.main_quit(*args)
+
+app = App()
+app.start()
 Gtk.main()
 
