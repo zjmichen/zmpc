@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Fri Dec  6 21:58:31 2013 -->
+<!-- Generated with glade 3.16.0 on Fri Dec  6 22:09:44 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkWindow" id="window1">
@@ -7,23 +7,46 @@
     <property name="title" translatable="yes">Test</property>
     <signal name="delete-event" handler="onDeleteWindow" swapped="no"/>
     <child>
-      <object class="GtkToolbar" id="toolbar1">
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <style>
-          <class name="primary-toolbar"/>
-        </style>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkToolButton" id="toolbutton1">
+          <object class="GtkLabel" id="lbl_title">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">toolbutton1</property>
-            <property name="use_underline">True</property>
-            <property name="stock_id">gtk-apply</property>
+            <property name="label" translatable="yes">Not Playing</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="homogeneous">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lbl_artist">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lbl_album">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
