@@ -61,7 +61,8 @@ class App:
 
     def update_info(self):
         info = self.mpc.currentsong()
-        print(info)
+        status = self.mpc.status()
+        print(status)
 
         lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
@@ -94,13 +95,16 @@ class App:
             img_cover.set_from_pixbuf(img_res)
 
     def fetch_image(self, url):
-        res = requests.get(url)
         basename = url.split("/")[-1]
         fname = os.path.join(self.cache_dir, basename)
-        f = open(fname, "wb")
-        f.write(res.content)
-        f.close()
-        res.close()
+
+        if not os.path.exists(fname):
+            res = requests.get(url)
+            f = open(fname, "wb")
+            f.write(res.content)
+            f.close()
+            res.close()
+            
         return Pixbuf.new_from_file(fname)
 
 class Handler:
