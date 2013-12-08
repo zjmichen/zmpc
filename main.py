@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
-import os, re
+import os, re, requests
 from gi.repository import Gtk
+from gi.repository.GdkPixbuf import Pixbuf
 from mpd import MPDClient
+from xml.etree import ElementTree as ET
 
 class App:
 
@@ -13,7 +15,7 @@ class App:
 
         self.window = self.builder.get_object("window1")
 
-        mpd_host = os.getenv('MPD_HOST_TEST', 'localhost')
+        mpd_host = os.getenv('MPD_HOST', 'localhost')
         parts = re.split('@', mpd_host, 2)
 
         if (len(parts) > 1):
@@ -28,6 +30,9 @@ class App:
         self.mpc = MPDClient()
         self.mpc.timeout = 10
 
+        self.lastfm_key = os.getenv('LASTFM_KEY', '')
+        self.lastfm_secret = os.getenv('LASTFM_SECRET', '')
+
     def start(self):
         self.mpc.connect(self.mpd_server, self.mpd_port)
         if (len(self.mpd_pass) > 0):
@@ -39,16 +44,46 @@ class App:
         self.window.show_all()
 
     def update_info(self):
-        lbl_title = self.builder.get_object('lbl_title')
-        lbl_artist = self.builder.get_object('lbl_artist')
-        lbl_album = self.builder.get_object('lbl_album')
-
         info = self.mpc.currentsong()
 
+        lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
+        lbl_artist = self.builder.get_object('lbl_artist')
         lbl_artist.set_text(info['albumartist'])
+        lbl_album = self.builder.get_object('lbl_album')
         lbl_album.set_text(info['album'])
 
+        self.update_cover(info)
+
+    def update_cover(self, info):
+        img_cover = self.builder.get_object('img_cover')
+        params = { 
+            'api_key': self.lastfm_key,
+            'method': 'album.getinfo'
+        }
+
+        params['artist'] = info['artist']
+        params['album'] = info['album']
+
+        url = 'http://ws.audioscrobbler.com/2.0/?'
+        for k in params:
+            url += k + '=' + params[k] + '&'
+
+        res = requests.get(url)
+        xml = ET.fromstring(res.content.decode())
+        cover_url = xml.find("*image[@size='extralarge']")
+        if cover_url != None:
+            img_res = self.fetch_image(cover_url.text)
+            img_cover.set_from_pixbuf(img_res)
+
+    def fetch_image(self, url):
+        res = requests.get(url)
+        fname = url.split("/")[-1]
+        f = open(fname, "wb")
+        f.write(res.content)
+        f.close()
+        res.close()
+        return Pixbuf.new_from_file(fname)
 
 class Handler:
     def onDeleteWindow(self, *args):
@@ -57,4 +92,3 @@ class Handler:
 app = App()
 app.start()
 Gtk.main()
-
