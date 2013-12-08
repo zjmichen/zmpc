@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-import os, re, requests
+import os, re, requests, threading
 from gi.repository import Gtk
 from gi.repository import GLib
 from gi.repository.GdkPixbuf import Pixbuf
 from mpd import MPDClient
 from xml.etree import ElementTree as ET
 
-class App   :
+class App:
 
     def __init__(self):
         self.builder = Gtk.Builder()
         self.builder.add_from_file("main.glade")
-        self.builder.connect_signals(Handler())
+        self.builder.connect_signals(Handler(self))
 
         self.window = self.builder.get_object("window1")
 
@@ -92,8 +92,20 @@ class App   :
         return Pixbuf.new_from_file(fname)
 
 class Handler:
+    def __init__(self, app):
+        self.app = app
+
     def onDeleteWindow(self, *args):
         Gtk.main_quit(*args)
+
+    def on_btn_previous_clicked(self, *args):
+        app.mpc.previous()
+
+    def on_btn_playpause_clicked(self, *args):
+        app.mpc.pause()
+
+    def on_btn_next_clicked(self, *args):
+        app.mpc.next()
 
 app = App()
 app.start()
