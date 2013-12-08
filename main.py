@@ -10,27 +10,6 @@ class App(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self, application_id='com.zackmichener.zmpc')
 
-    def do_activate(self):
-        nowplaying = NowPlaying(self)
-        nowplaying.start()
-
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
-
-
-
-class NowPlaying:
-    UPDATE_INTERVAL = 1
-    playstate = 'pause'
-
-    def __init__(self, app):
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file("main.glade")
-        self.builder.connect_signals(self)
-
-        self.window = self.builder.get_object("win_now_playing")
-        self.window.set_application(app)
-
         mpd_host = os.getenv('MPD_HOST', 'localhost')
         parts = re.split('@', mpd_host, 2)
 
@@ -53,10 +32,32 @@ class NowPlaying:
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
+    def do_activate(self):
+        nowplaying = NowPlaying(self)
+        nowplaying.start()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+
+
+class NowPlaying:
+    UPDATE_INTERVAL = 1
+    playstate = 'pause'
+
+    def __init__(self, app):
+        self.app = app
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file("nowplaying.glade")
+        self.builder.connect_signals(self)
+
+        self.window = self.builder.get_object("win_now_playing")
+        self.window.set_application(self.app)
+
     def start(self):
-        self.mpc.connect(self.mpd_server, self.mpd_port)
-        if (len(self.mpd_pass) > 0):
-            self.mpc.password(self.mpd_pass)
+        self.app.mpc.connect(self.app.mpd_server, self.app.mpd_port)
+        if (len(self.app.mpd_pass) > 0):
+            self.app.mpc.password(self.app.mpd_pass)
 
         self.update()
         GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
@@ -75,8 +76,8 @@ class NowPlaying:
         return True
 
     def update_info(self):
-        info = self.mpc.currentsong()
-        status = self.mpc.status()
+        info = self.app.mpc.currentsong()
+        status = self.app.mpc.status()
 
         lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
@@ -98,7 +99,7 @@ class NowPlaying:
     def update_cover(self, info):
         img_cover = self.builder.get_object('img_cover')
         params = { 
-            'api_key': self.lastfm_key,
+            'api_key': self.app.lastfm_key,
             'method': 'album.getinfo'
         }
 
@@ -118,7 +119,7 @@ class NowPlaying:
 
     def fetch_image(self, url):
         basename = url.split("/")[-1]
-        fname = os.path.join(self.cache_dir, basename)
+        fname = os.path.join(self.app.cache_dir, basename)
 
         if not os.path.exists(fname):
             res = requests.get(url)
@@ -130,15 +131,15 @@ class NowPlaying:
         return Pixbuf.new_from_file(fname)
 
     def on_btn_previous_clicked(self, *args):
-        self.mpc.previous()
+        self.app.mpc.previous()
         self.update()
 
     def on_btn_playpause_clicked(self, *args):
-        self.mpc.pause()
+        self.app.mpc.pause()
         self.update()
 
     def on_btn_next_clicked(self, *args):
-        self.mpc.next()
+        self.app.mpc.next()
         self.update()
 
 
