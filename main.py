@@ -8,6 +8,7 @@ from xml.etree import ElementTree as ET
 
 class App:
     UPDATE_INTERVAL = 1
+    playstate = 'pause'
 
     def __init__(self):
         self.builder = Gtk.Builder()
@@ -71,6 +72,14 @@ class App:
         lbl_album = self.builder.get_object('lbl_album')
         lbl_album.set_text(info['album'])
 
+        if self.playstate != status['state']:
+            self.playstate = status['state']
+            btn_playpause = self.builder.get_object('btn_playpause')
+            if self.playstate == 'pause':
+                btn_playpause.set_stock_id('gtk-media-play')
+            else:
+                btn_playpause.set_stock_id('gtk-media-pause')
+
         self.update_cover(info)
 
     def update_cover(self, info):
@@ -104,7 +113,7 @@ class App:
             f.write(res.content)
             f.close()
             res.close()
-            
+
         return Pixbuf.new_from_file(fname)
 
 class Handler:
