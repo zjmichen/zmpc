@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Dec  8 00:21:34 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Dec  8 00:52:41 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkApplicationWindow" id="win_now_playing">

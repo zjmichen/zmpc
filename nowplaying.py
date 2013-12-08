@@ -16,7 +16,6 @@ class NowPlaying:
         self.window = self.builder.get_object("win_now_playing")
         self.window.set_application(self.app)
 
-    def start(self):
         self.app.mpc.connect(self.app.mpd_server, self.app.mpd_port)
         if (len(self.app.mpd_pass) > 0):
             self.app.mpc.password(self.app.mpd_pass)

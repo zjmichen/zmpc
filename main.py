@@ -5,6 +5,7 @@ from gi.repository import Gtk, GLib, GObject
 from mpd import MPDClient
 
 from nowplaying import NowPlaying
+from settings import Settings
 
 class App(Gtk.Application):
     def __init__(self):
@@ -34,7 +35,7 @@ class App(Gtk.Application):
 
     def do_activate(self):
         nowplaying = NowPlaying(self)
-        nowplaying.start()
+        settings = Settings(self)
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
