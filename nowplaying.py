@@ -43,7 +43,10 @@ class NowPlaying:
       'artist': '',
       'album': ''
       }
-      status = { 'state': 'pause' }
+      status = {
+        'state': 'pause',
+        'random': '0'
+      }
 
     lbl_title = self.builder.get_object('lbl_title')
     lbl_title.set_text(info['title'])
@@ -59,6 +62,9 @@ class NowPlaying:
         btn_playpause.set_icon_name('media-playback-start')
       else:
         btn_playpause.set_icon_name('media-playback-pause')
+
+    tog_shuffle = self.builder.get_object('tog_shuffle')
+    tog_shuffle.set_active(bool(int(status['random'])))
 
     self.update_cover(info)
 
