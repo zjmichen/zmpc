@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 
-import os, re, requests, threading
-from gi.repository import Gtk
-from gi.repository import GLib
+import os, re, requests, threading, time
+from gi.repository import Gtk, GLib, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from mpd import MPDClient
 from xml.etree import ElementTree as ET
@@ -43,13 +42,23 @@ class App:
         if (len(self.mpd_pass) > 0):
             self.mpc.password(self.mpd_pass)
 
-        self.update_info()
+        self.update()
+        threading.Thread(target=self.watch_status).start()
 
         print(self.mpc.mpd_version)
         self.window.show_all()
 
+    def watch_status(self):
+        while(True):
+            self.update()
+            time.sleep(1)
+
+    def update(self):
+        threading.Thread(target=self.update_info).start()
+
     def update_info(self):
         info = self.mpc.currentsong()
+        print(info)
 
         lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
@@ -100,13 +109,17 @@ class Handler:
 
     def on_btn_previous_clicked(self, *args):
         app.mpc.previous()
+        app.update()
 
     def on_btn_playpause_clicked(self, *args):
         app.mpc.pause()
+        app.update()
 
     def on_btn_next_clicked(self, *args):
         app.mpc.next()
+        app.update()
 
+GObject.threads_init()
 app = App()
 app.start()
 Gtk.main()
