@@ -5,8 +5,10 @@ from xml.etree import ElementTree as ET
 from mpd import ConnectionError
 
 class NowPlaying:
-  UPDATE_INTERVAL = 1
-  playstate = 'pause'
+  UPDATE_INTERVAL = 0.5
+  playing = False
+  shuffle = False
+  repeat = False
 
   def __init__(self, app):
     self.app = app
@@ -21,11 +23,6 @@ class NowPlaying:
     GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
 
     self.window.show_all()
-
-  def watch_status(self):
-    while(True):
-      self.update()
-      time.sleep(1)
 
   def update(self):
     t = threading.Thread(target=self.update_info)
@@ -57,12 +54,22 @@ class NowPlaying:
     lbl_album.set_text(info['album'])
 
     playing = True if status['state'] == 'play' else False
-    tog_play = self.builder.get_object('tog_play')
-    tog_play.set_active(True)
-    tog_shuffle = self.builder.get_object('tog_shuffle')
-    tog_shuffle.set_active(bool(int(status['random'])))
-    tog_repeat = self.builder.get_object('tog_repeat')
-    tog_repeat.set_active(bool(int(status['repeat'])))
+    if playing != self.playing:
+      self.playing = playing
+      tog_play = self.builder.get_object('tog_play')
+      tog_play.set_active(playing)
+
+    shuffle = bool(int(status['random']))
+    if shuffle != self.shuffle:
+      self.shuffle = shuffle
+      tog_shuffle = self.builder.get_object('tog_shuffle')
+      tog_shuffle.set_active(shuffle)
+
+    repeat = bool(int(status['repeat']))
+    if repeat != self.repeat:
+      self.repeat = repeat
+      tog_repeat = self.builder.get_object('tog_repeat')
+      tog_repeat.set_active(repeat)
 
     self.update_cover(info)
 
@@ -104,20 +111,24 @@ class NowPlaying:
 
     return Pixbuf.new_from_file(fname)
 
-  def on_btn_previous_clicked(self, *args):
+  def on_btn_previous_clicked(self, data):
     self.app.mpc.previous()
     self.update()
 
-  def on_tog_play_toggled(self, *args):
-    self.app.mpc.pause()
+  def on_tog_play_toggled(self, data):
+    do_play = data.get_active()
+    if do_play:
+      self.app.mpc.play()
+    else:
+      self.app.mpc.pause()
     self.update()
 
-  def on_btn_next_clicked(self, *args):
+  def on_btn_next_clicked(self, data):
     self.app.mpc.next()
     self.update()
 
   def on_tog_shuffle_toggled(self, data):
-    do_random = self.builder.get_object("tog_shuffle").get_active()
+    do_random = data.get_active()
     self.app.mpc.random(int(do_random))
     self.update()
 
