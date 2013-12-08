@@ -112,3 +112,7 @@ class NowPlaying:
     self.app.mpc.next()
     self.update()
 
+  def on_tog_shuffle_toggled(self, data):
+    do_random = self.builder.get_object("tog_shuffle").get_active()
+    self.app.mpc.random(int(do_random))
+    self.update()
