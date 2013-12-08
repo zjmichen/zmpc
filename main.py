@@ -1,21 +1,35 @@
 #!/usr/bin/python3
 
 import os, re, requests, threading, time
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, GLib, GObject, Gio
 from gi.repository.GdkPixbuf import Pixbuf
 from mpd import MPDClient
 from xml.etree import ElementTree as ET
 
-class App:
+class App(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self, application_id='com.zackmichener.zmpc')
+
+    def do_activate(self):
+        nowplaying = NowPlaying(self)
+        nowplaying.start()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+
+
+class NowPlaying:
     UPDATE_INTERVAL = 1
     playstate = 'pause'
 
-    def __init__(self):
+    def __init__(self, app):
         self.builder = Gtk.Builder()
         self.builder.add_from_file("main.glade")
-        self.builder.connect_signals(Handler(self))
+        self.builder.connect_signals(self)
 
-        self.window = self.builder.get_object("window1")
+        self.window = self.builder.get_object("win_now_playing")
+        self.window.set_application(app)
 
         mpd_host = os.getenv('MPD_HOST', 'localhost')
         parts = re.split('@', mpd_host, 2)
@@ -63,7 +77,6 @@ class App:
     def update_info(self):
         info = self.mpc.currentsong()
         status = self.mpc.status()
-        print(status)
 
         lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
@@ -116,28 +129,20 @@ class App:
 
         return Pixbuf.new_from_file(fname)
 
-class Handler:
-    def __init__(self, app):
-        self.app = app
-
-    def onDeleteWindow(self, *args):
-        Gtk.main_quit(*args)
-
     def on_btn_previous_clicked(self, *args):
-        app.mpc.previous()
-        app.update()
+        self.mpc.previous()
+        self.update()
 
     def on_btn_playpause_clicked(self, *args):
-        app.mpc.pause()
-        app.update()
+        self.mpc.pause()
+        self.update()
 
     def on_btn_next_clicked(self, *args):
-        app.mpc.next()
-        app.update()
+        self.mpc.next()
+        self.update()
 
 
 
 GObject.threads_init()
 app = App()
-app.start()
-Gtk.main()
+app.run(None)

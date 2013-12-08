@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sat Dec  7 21:11:37 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Dec  8 00:11:06 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkWindow" id="window1">
+  <object class="GtkApplicationWindow" id="win_now_playing">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Music</property>
-    <signal name="delete-event" handler="onDeleteWindow" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
