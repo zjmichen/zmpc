@@ -2,6 +2,7 @@ import requests, os, threading, time
 from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from xml.etree import ElementTree as ET
+from mpd import ConnectionError
 
 class NowPlaying:
     UPDATE_INTERVAL = 1
@@ -15,10 +16,6 @@ class NowPlaying:
 
         self.window = self.builder.get_object("win_now_playing")
         self.window.set_application(self.app)
-
-        self.app.mpc.connect(self.app.mpd_server, self.app.mpd_port)
-        if (len(self.app.mpd_pass) > 0):
-            self.app.mpc.password(self.app.mpd_pass)
 
         self.update()
         GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
@@ -37,13 +34,21 @@ class NowPlaying:
         return True
 
     def update_info(self):
-        info = self.app.mpc.currentsong()
-        status = self.app.mpc.status()
+        try:
+          info = self.app.mpc.currentsong()
+          status = self.app.mpc.status()
+        except ConnectionError:
+          info = {
+            'title': 'Not Connected',
+            'artist': '',
+            'album': ''
+          }
+          status = { 'state': 'paused' }
 
         lbl_title = self.builder.get_object('lbl_title')
         lbl_title.set_text(info['title'])
         lbl_artist = self.builder.get_object('lbl_artist')
-        lbl_artist.set_text(info['albumartist'])
+        lbl_artist.set_text(info['artist'])
         lbl_album = self.builder.get_object('lbl_album')
         lbl_album.set_text(info['album'])
 
@@ -59,24 +64,28 @@ class NowPlaying:
 
     def update_cover(self, info):
         img_cover = self.builder.get_object('img_cover')
-        params = { 
-            'api_key': self.app.lastfm_key,
-            'method': 'album.getinfo'
-        }
 
-        params['artist'] = info['artist']
-        params['album'] = info['album']
+        if len(info['album']) > 0:
+          params = { 
+              'api_key': self.app.lastfm_key,
+              'method': 'album.getinfo'
+          }
 
-        url = 'http://ws.audioscrobbler.com/2.0/?'
-        for k in params:
-            url += k + '=' + params[k] + '&'
+          params['artist'] = info['artist']
+          params['album'] = info['album']
 
-        res = requests.get(url)
-        xml = ET.fromstring(res.content.decode())
-        cover_url = xml.find("*image[@size='extralarge']")
-        if cover_url != None:
-            img_res = self.fetch_image(cover_url.text)
-            img_cover.set_from_pixbuf(img_res)
+          url = 'http://ws.audioscrobbler.com/2.0/?'
+          for k in params:
+              url += k + '=' + params[k] + '&'
+
+          res = requests.get(url)
+          xml = ET.fromstring(res.content.decode())
+          cover_url = xml.find("*image[@size='extralarge']")
+          if cover_url != None:
+              img_res = self.fetch_image(cover_url.text)
+              img_cover.set_from_pixbuf(img_res)
+        else:
+          img_cover.set_from_stock('gtk-missing-image', Gtk.IconSize.BUTTON)
 
     def fetch_image(self, url):
         basename = url.split("/")[-1]

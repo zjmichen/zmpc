@@ -25,6 +25,7 @@ class App(Gtk.Application):
 
         self.mpc = MPDClient()
         self.mpc.timeout = 10
+        self.connect()
 
         self.lastfm_key = os.getenv('LASTFM_KEY', '')
         self.lastfm_secret = os.getenv('LASTFM_SECRET', '')
@@ -32,6 +33,18 @@ class App(Gtk.Application):
         self.cache_dir = os.path.join(GLib.get_user_cache_dir(), 'zmpc')
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
+
+    def connect(self):
+        try:
+            self.mpc.connect(self.mpd_server, self.mpd_port)
+            if (len(self.mpd_pass) > 0):
+                self.mpc.password(self.mpd_pass)
+        except ConnectionRefusedError:
+            pass
+
+    def reconnect(self):
+        self.mpc.disconnect()
+        self.connect()
 
     def do_activate(self):
         nowplaying = NowPlaying(self)
