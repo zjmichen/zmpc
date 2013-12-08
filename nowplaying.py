@@ -112,27 +112,47 @@ class NowPlaying:
     return Pixbuf.new_from_file(fname)
 
   def on_btn_previous_clicked(self, data):
-    self.app.mpc.previous()
+    try:
+      self.app.mpc.previous()
+    except ConnectionError:
+      pass
+
     self.update()
 
   def on_tog_play_toggled(self, data):
     do_play = data.get_active()
-    if do_play:
-      self.app.mpc.play()
-    else:
-      self.app.mpc.pause()
+    try:
+      if do_play:
+        self.app.mpc.play()
+      else:
+        self.app.mpc.pause()
+    except ConnectionError:
+      pass
+
     self.update()
 
   def on_btn_next_clicked(self, data):
-    self.app.mpc.next()
+    try:
+      self.app.mpc.next()
+    except ConnectionError:
+      pass
+
     self.update()
 
   def on_tog_shuffle_toggled(self, data):
     do_random = data.get_active()
-    self.app.mpc.random(int(do_random))
+    try:
+      self.app.mpc.random(int(do_random))
+    except ConnectionError:
+      pass
+
     self.update()
 
   def on_tog_repeat_toggled(self, data):
     do_repeat = self.builder.get_object('tog_repeat').get_active()
-    self.app.mpc.repeat(int(do_repeat))
+    try:
+      self.app.mpc.repeat(int(do_repeat))
+    except ConnectionError:
+      pass
+      
     self.update()
