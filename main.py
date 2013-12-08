@@ -2,11 +2,12 @@
 
 import os, re, requests
 from gi.repository import Gtk
+from gi.repository import GLib
 from gi.repository.GdkPixbuf import Pixbuf
 from mpd import MPDClient
 from xml.etree import ElementTree as ET
 
-class App:
+class App   :
 
     def __init__(self):
         self.builder = Gtk.Builder()
@@ -32,6 +33,10 @@ class App:
 
         self.lastfm_key = os.getenv('LASTFM_KEY', '')
         self.lastfm_secret = os.getenv('LASTFM_SECRET', '')
+
+        self.cache_dir = os.path.join(GLib.get_user_cache_dir(), 'zmpc')
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
 
     def start(self):
         self.mpc.connect(self.mpd_server, self.mpd_port)
@@ -78,7 +83,8 @@ class App:
 
     def fetch_image(self, url):
         res = requests.get(url)
-        fname = url.split("/")[-1]
+        basename = url.split("/")[-1]
+        fname = os.path.join(self.cache_dir, basename)
         f = open(fname, "wb")
         f.write(res.content)
         f.close()
