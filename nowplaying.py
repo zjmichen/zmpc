@@ -56,14 +56,9 @@ class NowPlaying:
     lbl_album = self.builder.get_object('lbl_album')
     lbl_album.set_text(info['album'])
 
-    if self.playstate != status['state']:
-      self.playstate = status['state']
-      btn_playpause = self.builder.get_object('btn_playpause')
-      if self.playstate == 'pause':
-        btn_playpause.set_icon_name('media-playback-start')
-      else:
-        btn_playpause.set_icon_name('media-playback-pause')
-
+    playing = True if status['state'] == 'play' else False
+    tog_play = self.builder.get_object('tog_play')
+    tog_play.set_active(True)
     tog_shuffle = self.builder.get_object('tog_shuffle')
     tog_shuffle.set_active(bool(int(status['random'])))
     tog_repeat = self.builder.get_object('tog_repeat')
@@ -113,7 +108,7 @@ class NowPlaying:
     self.app.mpc.previous()
     self.update()
 
-  def on_btn_playpause_clicked(self, *args):
+  def on_tog_play_toggled(self, *args):
     self.app.mpc.pause()
     self.update()
 
