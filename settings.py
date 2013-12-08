@@ -10,6 +10,14 @@ class Settings:
 
     self.window = self.builder.get_object("win_settings")
     self.window.set_application(self.app)
+
+    ent_server = self.builder.get_object("entry_server")
+    ent_server.set_text(self.app.mpd_server)
+    ent_port = self.builder.get_object("entry_port")
+    ent_port.set_text(str(self.app.mpd_port))
+    ent_password = self.builder.get_object("entry_password")
+    ent_password.set_text(self.app.mpd_pass)
+
     self.window.show_all()
 
   def on_btn_save_clicked(self, data):
