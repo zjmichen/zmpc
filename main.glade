@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sat Dec  7 19:45:54 2013 -->
+<!-- Generated with glade 3.16.0 on Sat Dec  7 21:11:37 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkWindow" id="window1">
@@ -39,6 +39,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Not Playing</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
