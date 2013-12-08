@@ -45,7 +45,8 @@ class NowPlaying:
       }
       status = {
         'state': 'pause',
-        'random': '0'
+        'random': '0',
+        'repeat': '0'
       }
 
     lbl_title = self.builder.get_object('lbl_title')
@@ -65,6 +66,8 @@ class NowPlaying:
 
     tog_shuffle = self.builder.get_object('tog_shuffle')
     tog_shuffle.set_active(bool(int(status['random'])))
+    tog_repeat = self.builder.get_object('tog_repeat')
+    tog_repeat.set_active(bool(int(status['repeat'])))
 
     self.update_cover(info)
 
@@ -121,4 +124,9 @@ class NowPlaying:
   def on_tog_shuffle_toggled(self, data):
     do_random = self.builder.get_object("tog_shuffle").get_active()
     self.app.mpc.random(int(do_random))
+    self.update()
+
+  def on_tog_repeat_toggled(self, data):
+    do_repeat = self.builder.get_object('tog_repeat').get_active()
+    self.app.mpc.repeat(int(do_repeat))
     self.update()

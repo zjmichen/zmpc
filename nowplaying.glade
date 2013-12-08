@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Dec  8 02:35:50 2013 -->
+<!-- Generated with glade 3.16.0 on Sun Dec  8 02:48:05 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkApplicationWindow" id="win_now_playing">
@@ -127,10 +127,24 @@
               <object class="GtkToggleToolButton" id="tog_shuffle">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">toolbutton1</property>
+                <property name="label" translatable="yes">Shuffle</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">media-playlist-shuffle</property>
                 <signal name="toggled" handler="on_tog_shuffle_toggled" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleToolButton" id="tog_repeat">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Repeat</property>
+                <property name="use_underline">True</property>
+                <property name="icon_name">media-playlist-repeat</property>
+                <signal name="toggled" handler="on_tog_repeat_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
