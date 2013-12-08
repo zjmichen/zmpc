@@ -7,6 +7,7 @@ from mpd import MPDClient
 from xml.etree import ElementTree as ET
 
 class App:
+    UPDATE_INTERVAL = 1
 
     def __init__(self):
         self.builder = Gtk.Builder()
@@ -43,9 +44,8 @@ class App:
             self.mpc.password(self.mpd_pass)
 
         self.update()
-        threading.Thread(target=self.watch_status).start()
+        GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
 
-        print(self.mpc.mpd_version)
         self.window.show_all()
 
     def watch_status(self):
@@ -54,7 +54,10 @@ class App:
             time.sleep(1)
 
     def update(self):
-        threading.Thread(target=self.update_info).start()
+        t = threading.Thread(target=self.update_info)
+        t.daemon = True
+        t.start()
+        return True
 
     def update_info(self):
         info = self.mpc.currentsong()
@@ -118,6 +121,8 @@ class Handler:
     def on_btn_next_clicked(self, *args):
         app.mpc.next()
         app.update()
+
+
 
 GObject.threads_init()
 app = App()
