@@ -5,7 +5,7 @@ class Settings:
     self.app = app
 
     self.builder = Gtk.Builder()
-    self.builder.add_from_file("settings.glade")
+    self.builder.add_from_file("data/ui/settings.glade")
     self.builder.connect_signals(self)
 
     self.window = self.builder.get_object("win_settings")

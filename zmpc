@@ -1,0 +1,6 @@
+#!/bin/sh
+
+DATA_DIR=`pwd`/data
+SRC_DIR=`pwd`/src
+
+/usr/bin/env python src/app.py
