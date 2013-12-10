@@ -6,6 +6,7 @@ from mpd import MPDClient
 
 from nowplaying import NowPlaying
 from settings import Settings
+from stream import Stream
 
 class App(Gtk.Application):
   def __init__(self):
@@ -31,6 +32,7 @@ class App(Gtk.Application):
 
   def do_startup(self):
     Gtk.Application.do_startup(self)
+    self.create_menu()
 
     mpd_host = os.getenv('MPD_HOST', 'localhost')
     parts = re.split('@', mpd_host, 2)
@@ -55,7 +57,8 @@ class App(Gtk.Application):
     if not os.path.exists(self.cache_dir):
       os.makedirs(self.cache_dir)
 
-    self.create_menu()
+    self.stream = Stream(self.mpd_server, 8004)
+    self.stream.start()
 
   def create_menu(self):
     menu = Gio.Menu()
