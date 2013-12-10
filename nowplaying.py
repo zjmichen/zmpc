@@ -2,7 +2,7 @@ import requests, os, threading, time
 from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from xml.etree import ElementTree as ET
-from mpd import ConnectionError
+from mpd import ConnectionError, CommandError
 
 class NowPlaying:
   UPDATE_INTERVAL = 0.5
@@ -77,7 +77,7 @@ class NowPlaying:
     img_cover = self.builder.get_object('img_cover')
 
     if len(info['album']) > 0:
-      params = { 
+      params = {
         'api_key': self.app.lastfm_key,
         'method': 'album.getinfo'
       }
@@ -116,6 +116,8 @@ class NowPlaying:
       self.app.mpc.previous()
     except ConnectionError:
       pass
+    except CommandError:
+      pass
 
     self.update()
 
@@ -128,6 +130,8 @@ class NowPlaying:
         self.app.mpc.pause()
     except ConnectionError:
       pass
+    except CommandError:
+      pass
 
     self.update()
 
@@ -135,6 +139,8 @@ class NowPlaying:
     try:
       self.app.mpc.next()
     except ConnectionError:
+      pass
+    except CommandError:
       pass
 
     self.update()
@@ -145,6 +151,8 @@ class NowPlaying:
       self.app.mpc.random(int(do_random))
     except ConnectionError:
       pass
+    except CommandError:
+      pass
 
     self.update()
 
@@ -154,5 +162,7 @@ class NowPlaying:
       self.app.mpc.repeat(int(do_repeat))
     except ConnectionError:
       pass
-      
+    except CommandError:
+      pass
+
     self.update()
