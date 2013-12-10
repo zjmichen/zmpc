@@ -48,7 +48,7 @@ class App(Gtk.Application):
     self.mpc.timeout = 10
     threading.Thread(target=self.connect).start()
 
-    self.lastfm_key = os.getenv('LASTFM_KEY', '')
+    self.lastfm_key = os.getenv('LASTFM_KEY', 'e4dffe2a256bbd37e24ad001c36836a2')
     self.lastfm_secret = os.getenv('LASTFM_SECRET', '')
 
     self.cache_dir = os.path.join(GLib.get_user_cache_dir(), 'zmpc')
