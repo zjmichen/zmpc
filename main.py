@@ -10,17 +10,20 @@ from settings import Settings
 class App(Gtk.Application):
   def __init__(self):
     Gtk.Application.__init__(self, application_id='com.zackmichener.zmpc', register_session=True)
+    self.connected = False;
 
   def connect(self):
     try:
       self.mpc.connect(self.mpd_server, self.mpd_port)
       if (len(self.mpd_pass) > 0):
         self.mpc.password(self.mpd_pass)
+      self.connected = True
     except ConnectionRefusedError:
-      pass
+      self.connected = False
 
   def reconnect(self):
-    self.mpc.disconnect()
+    if self.connected:
+      self.mpc.disconnect()
     self.connect()
 
   def do_activate(self):
