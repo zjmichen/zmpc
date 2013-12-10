@@ -1,4 +1,4 @@
-import requests, os, threading, time
+import requests, os, threading, time, urllib.parse
 from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from xml.etree import ElementTree as ET
@@ -46,6 +46,7 @@ class NowPlaying:
         'repeat': '0'
       }
 
+
     lbl_title = self.builder.get_object('lbl_title')
     lbl_title.set_text(info['title'])
     lbl_artist = self.builder.get_object('lbl_artist')
@@ -87,13 +88,14 @@ class NowPlaying:
 
       url = 'http://ws.audioscrobbler.com/2.0/?'
       for k in params:
-        url += k + '=' + params[k] + '&'
+        url += k + '=' + urllib.parse.quote(params[k]) + '&'
 
       res = requests.get(url)
       xml = ET.fromstring(res.content.decode())
-      cover_url = xml.find("*image[@size='extralarge']")
+      cover_url = xml.find("*image[@size='extralarge']").text
+
       if cover_url != None:
-        img_res = self.fetch_image(cover_url.text)
+        img_res = self.fetch_image(cover_url)
         img_cover.set_from_pixbuf(img_res)
     else:
       img_cover.set_from_icon_name('gtk-missing-image', Gtk.IconSize.BUTTON)
