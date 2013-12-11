@@ -14,7 +14,7 @@ class Stream:
     playbin.set_property('uri', uri)
     return pipe
 
-  def start(self):
+  def play(self):
     self.pipe.set_state(Gst.State.PLAYING)
     self.streaming = True
 

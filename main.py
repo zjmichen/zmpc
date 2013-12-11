@@ -31,7 +31,7 @@ class App(Gtk.Application):
     self.stream.stop()
     self.stream = Stream(self.mpd_stream_uri)
     if (do_stream):
-      self.stream.start()
+      self.stream.play()
 
   def play(self):
     try:
@@ -84,9 +84,14 @@ class App(Gtk.Application):
 
   def create_menu(self):
     menu = Gio.Menu()
+    menu.append("Stream", "app.stream")
     menu.append("Settings", "app.settings")
     menu.append("Quit", "app.quit")
     self.set_app_menu(menu)
+
+    stream_action = Gio.SimpleAction.new("stream", None)
+    stream_action.connect("activate", self.toggle_stream)
+    self.add_action(stream_action)
 
     settings_action = Gio.SimpleAction.new("settings", None)
     settings_action.connect("activate", self.menu_settings)
@@ -95,6 +100,12 @@ class App(Gtk.Application):
     quit_action = Gio.SimpleAction.new("quit", None)
     quit_action.connect("activate", self.menu_quit)
     self.add_action(quit_action)
+
+  def toggle_stream(self, action, parameter):
+    if (self.stream.streaming):
+      self.stream.pause()
+    else:
+      self.stream.play()
 
   def menu_settings(self, action, parameter):
     settings = Settings(self)
