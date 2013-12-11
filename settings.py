@@ -24,6 +24,7 @@ class Settings:
     server = self.builder.get_object("entry_server").get_text()
     port = self.builder.get_object("entry_port").get_text()
     password = self.builder.get_object("entry_password").get_text()
+    stream_uri = self.builder.get_object("entry_stream_uri").get_text()
     self.window.destroy()
 
     if len(server) == 0:
@@ -34,8 +35,8 @@ class Settings:
     self.app.mpd_server = server
     self.app.mpd_port = port
     self.app.mpd_pass = password
+    self.app.mpd_stream_uri = stream_uri
     self.app.reconnect()
-
 
   def on_btn_cancel_clicked(self, data):
     self.window.destroy()

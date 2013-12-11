@@ -27,6 +27,12 @@ class App(Gtk.Application):
       self.mpc.disconnect()
     self.connect()
 
+    do_stream = self.stream.streaming
+    self.stream.stop()
+    self.stream = Stream(self.mpd_stream_uri)
+    if (do_stream):
+      self.stream.start()
+
   def play(self):
     try:
       self.mpc.play()
