@@ -19,7 +19,11 @@ class Stream:
     self.pipe.set_state(Gst.State.PLAYING)
     self.streaming = True
 
-  def stop(self):
+  def pause(self):
     self.pipe.set_state(Gst.State.PAUSED)
+    self.streaming = False
+
+  def stop(self):
+    self.pipe.set_state(Gst.State.NULL)
     self.streaming = False
 

@@ -27,6 +27,22 @@ class App(Gtk.Application):
       self.mpc.disconnect()
     self.connect()
 
+  def play(self):
+    try:
+      self.mpc.play()
+    except ConnectionError:
+      pass
+    except CommandError:
+      pass
+
+  def pause(self):
+    try:
+      self.mpc.pause()
+    except ConnectionError:
+      pass
+    except CommandError:
+      pass
+
   def do_activate(self):
     nowplaying = NowPlaying(self)
 
@@ -79,6 +95,10 @@ class App(Gtk.Application):
 
   def menu_quit(self, action, parameter):
     self.quit()
+
+  def quit(self):
+    self.stream.stop()
+    super.quit()
 
 if __name__ == "__main__":
   GObject.threads_init()
