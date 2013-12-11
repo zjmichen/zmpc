@@ -61,6 +61,7 @@ class App(Gtk.Application):
       self.mpd_server = parts[0]
 
     self.mpd_port = os.getenv('MPD_PORT', 6600)
+    self.mpd_stream_uri = ''
 
     self.mpc = MPDClient()
     self.mpc.timeout = 10
@@ -73,8 +74,7 @@ class App(Gtk.Application):
     if not os.path.exists(self.cache_dir):
       os.makedirs(self.cache_dir)
 
-    self.stream = Stream(self.mpd_server, 8004)
-    self.stream.start()
+    self.stream = Stream(self.mpd_stream_uri)
 
   def create_menu(self):
     menu = Gio.Menu()
