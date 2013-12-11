@@ -4,6 +4,8 @@ Gst.init(None)
 
 class Stream:
   def __init__(self, host, port):
+    self.streaming = False
+
     self.pipe = Gst.Pipeline()
     tcpsrc = Gst.ElementFactory.make("tcpserversrc", "source")
     self.pipe.add(tcpsrc)
@@ -15,19 +17,21 @@ class Stream:
     self.pipe.add(decode)
     tcpsrc.link(decode)
 
-    convert = Gst.ElementFactory.make("audioconvert", "convert")
-    self.pipe.add(convert)
+    self.convert = Gst.ElementFactory.make("audioconvert", "convert")
+    self.pipe.add(self.convert)
 
     sink = Gst.ElementFactory.make("alsasink", "sink")
     self.pipe.add(sink)
-    convert.link(sink)
+    self.convert.link(sink)
 
-  def new_decode_pad(dbin, pad, islast):
-    pad.link(convert.get_pad("sink"))
+  def new_decode_pad(self, dbin, pad, islast):
+    pad.link(self.convert.get_pad("sink"))
 
   def start(self):
     self.pipe.set_state(Gst.State.PLAYING)
+    self.streaming = True
 
   def stop(self):
     self.pipe.set_state(Gst.State.PAUSED)
+    self.streaming = False
 
