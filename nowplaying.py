@@ -31,21 +31,22 @@ class NowPlaying:
     return True
 
   def update_info(self):
+    info = {}
+    status = {}
+
     try:
       info = self.app.mpc.currentsong()
       status = self.app.mpc.status()
     except ConnectionError:
-      info = {
-      'title': 'Not Connected',
-      'artist': '',
-      'album': ''
-      }
-      status = {
-        'state': 'pause',
-        'random': '0',
-        'repeat': '0'
-      }
+      pass
 
+    info['title'] = 'Not Connected' if ('title' not in info) else info['title']
+    info['artist'] = '' if ('artist' not in info) else info['artist']
+    info['album'] = '' if ('album' not in info) else info['album']
+
+    status['state'] = 'pause' if ('state' not in status) else status['state']
+    status['random'] = '0'    if ('random' not in status) else status['random']
+    status['repeat'] = '0'    if ('repeat' not in status) else status['repeat']
 
     lbl_title = self.builder.get_object('lbl_title')
     lbl_title.set_text(info['title'])
