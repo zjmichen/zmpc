@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Wed Dec 11 22:20:27 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Dec 11 22:57:48 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkApplicationWindow" id="win_now_playing">
@@ -28,10 +28,10 @@
           <object class="GtkBox" id="box2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">10</property>
-            <property name="margin_right">10</property>
-            <property name="margin_top">10</property>
-            <property name="margin_bottom">10</property>
+            <property name="margin_left">12</property>
+            <property name="margin_right">12</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="lbl_title">
@@ -84,6 +84,20 @@
           </packing>
         </child>
         <child>
+          <object class="GtkProgressBar" id="pb_seek">
+            <property name="height_request">5</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">6</property>
+            <property name="margin_right">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkToolbar" id="toolbar1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -91,6 +105,7 @@
               <object class="GtkToolButton" id="btn_previous">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_right">6</property>
                 <property name="label" translatable="yes">Previous</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">media-skip-backward</property>
@@ -105,6 +120,7 @@
               <object class="GtkToggleToolButton" id="tog_play">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_right">6</property>
                 <property name="label" translatable="yes">Play/Pause</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">media-playback-start</property>
@@ -144,6 +160,7 @@
               <object class="GtkToggleToolButton" id="tog_shuffle">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_right">6</property>
                 <property name="label" translatable="yes">Shuffle</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">media-playlist-shuffle</property>
@@ -172,7 +189,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
