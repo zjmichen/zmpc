@@ -126,15 +126,10 @@ class NowPlaying:
 
   def on_tog_play_toggled(self, data):
     do_play = data.get_active()
-    try:
-      if do_play:
-        self.app.mpc.play()
-      else:
-        self.app.mpc.pause()
-    except ConnectionError:
-      pass
-    except CommandError:
-      pass
+    if do_play:
+      self.app.play()
+    else:
+      self.app.pause()
 
     self.update()
 

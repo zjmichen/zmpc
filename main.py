@@ -27,6 +27,28 @@ class App(Gtk.Application):
       self.mpc.disconnect()
     self.connect()
 
+    do_stream = self.stream.streaming
+    self.stream.stop()
+    self.stream = Stream(self.mpd_stream_uri)
+    if (do_stream):
+      self.stream.play()
+
+  def play(self):
+    try:
+      self.mpc.play()
+    except ConnectionError:
+      pass
+    except CommandError:
+      pass
+
+  def pause(self):
+    try:
+      self.mpc.pause()
+    except ConnectionError:
+      pass
+    except CommandError:
+      pass
+
   def do_activate(self):
     nowplaying = NowPlaying(self)
 
@@ -45,6 +67,7 @@ class App(Gtk.Application):
       self.mpd_server = parts[0]
 
     self.mpd_port = os.getenv('MPD_PORT', 6600)
+    self.mpd_stream_uri = ''
 
     self.mpc = MPDClient()
     self.mpc.timeout = 10
@@ -57,14 +80,25 @@ class App(Gtk.Application):
     if not os.path.exists(self.cache_dir):
       os.makedirs(self.cache_dir)
 
-    self.stream = Stream(self.mpd_server, 8004)
-    self.stream.start()
+    self.mpd_stream_uri = 'http://pi.zackmichener.net:8004/'
+    self.stream = Stream(self.mpd_stream_uri)
 
   def create_menu(self):
     menu = Gio.Menu()
     menu.append("Settings", "app.settings")
     menu.append("Quit", "app.quit")
+
+    stream_item = Gio.MenuItem.new("Stream", "app.stream")
+    stream_item.set_action_and_target_value("app.stream", GLib.Variant.new_boolean("true"))
+
+    menu.prepend_item(stream_item)
     self.set_app_menu(menu)
+
+    stream_action = Gio.SimpleAction.new_stateful("stream",
+        GLib.VariantType.new('b'),
+        GLib.Variant.new_boolean('true'))
+    stream_action.connect("activate", self.toggle_stream)
+    self.add_action(stream_action)
 
     settings_action = Gio.SimpleAction.new("settings", None)
     settings_action.connect("activate", self.menu_settings)
@@ -74,11 +108,22 @@ class App(Gtk.Application):
     quit_action.connect("activate", self.menu_quit)
     self.add_action(quit_action)
 
+  def toggle_stream(self, action, parameter):
+    print(dir(action))
+    if (self.stream.streaming):
+      self.stream.pause()
+    else:
+      self.stream.play()
+
   def menu_settings(self, action, parameter):
     settings = Settings(self)
 
   def menu_quit(self, action, parameter):
     self.quit()
+
+  def quit(self):
+    self.stream.stop()
+    super.quit()
 
 if __name__ == "__main__":
   GObject.threads_init()
