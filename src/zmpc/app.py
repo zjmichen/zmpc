@@ -4,12 +4,13 @@ import os, re, sys, threading
 from gi.repository import Gtk, GLib, GObject, Gio
 from mpd import MPDClient
 
-from nowplaying import NowPlaying
-from settings import Settings
+from zmpc.nowplaying import NowPlaying
+from zmpc.settings import Settings
 
 class App(Gtk.Application):
   def __init__(self):
     Gtk.Application.__init__(self, application_id='com.zackmichener.zmpc', register_session=True)
+    self.appdir = os.path.dirname(__file__)
 
   def connect(self):
     try:
@@ -75,8 +76,3 @@ class App(Gtk.Application):
   def menu_quit(self, action, parameter):
     self.quit()
 
-if __name__ == "__main__":
-  GObject.threads_init()
-  app = App()
-  status = app.run(None)
-  sys.exit(status)

@@ -13,7 +13,7 @@ class NowPlaying:
   def __init__(self, app):
     self.app = app
     self.builder = Gtk.Builder()
-    self.builder.add_from_file("data/ui/nowplaying.glade")
+    self.builder.add_from_file(self.app.appdir + "/data/ui/nowplaying.glade")
     self.builder.connect_signals(self)
 
     self.window = self.builder.get_object("win_now_playing")
