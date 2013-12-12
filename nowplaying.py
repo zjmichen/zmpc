@@ -1,4 +1,4 @@
-import requests, os, threading, time, urllib.parse
+import re, requests, os, threading, time, urllib.parse
 from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from xml.etree import ElementTree as ET
@@ -47,6 +47,10 @@ class NowPlaying:
     status['state'] = 'pause' if ('state' not in status) else status['state']
     status['random'] = '0'    if ('random' not in status) else status['random']
     status['repeat'] = '0'    if ('repeat' not in status) else status['repeat']
+    status['time'] = '0:1'    if ('time' not in status) else status['time']
+
+    prog_time = re.split(':', status['time'])
+    progress = int(prog_time[0]) / int(prog_time[1])
 
     lbl_title = self.builder.get_object('lbl_title')
     lbl_title.set_text(info['title'])
@@ -54,6 +58,8 @@ class NowPlaying:
     lbl_artist.set_text(info['artist'])
     lbl_album = self.builder.get_object('lbl_album')
     lbl_album.set_text(info['album'])
+    pb_seek = self.builder.get_object('pb_seek')
+    pb_seek.set_fraction(progress)
 
     playing = True if status['state'] == 'play' else False
     if playing != self.playing:
