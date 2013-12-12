@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Sun Dec  8 11:57:55 2013 -->
+<!-- Generated with glade 3.16.0 on Wed Dec 11 22:20:27 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkApplicationWindow" id="win_now_playing">
@@ -126,6 +126,17 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="toolbutton1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="draw">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
