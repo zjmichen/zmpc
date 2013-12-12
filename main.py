@@ -80,16 +80,23 @@ class App(Gtk.Application):
     if not os.path.exists(self.cache_dir):
       os.makedirs(self.cache_dir)
 
+    self.mpd_stream_uri = 'http://pi.zackmichener.net:8004/'
     self.stream = Stream(self.mpd_stream_uri)
 
   def create_menu(self):
     menu = Gio.Menu()
-    menu.append("Stream", "app.stream")
     menu.append("Settings", "app.settings")
     menu.append("Quit", "app.quit")
+
+    stream_item = Gio.MenuItem.new("Stream", "app.stream")
+    stream_item.set_action_and_target_value("app.stream", GLib.Variant.new_boolean("true"))
+
+    menu.prepend_item(stream_item)
     self.set_app_menu(menu)
 
-    stream_action = Gio.SimpleAction.new("stream", None)
+    stream_action = Gio.SimpleAction.new_stateful("stream",
+        GLib.VariantType.new('b'),
+        GLib.Variant.new_boolean('true'))
     stream_action.connect("activate", self.toggle_stream)
     self.add_action(stream_action)
 
@@ -102,6 +109,7 @@ class App(Gtk.Application):
     self.add_action(quit_action)
 
   def toggle_stream(self, action, parameter):
+    print(dir(action))
     if (self.stream.streaming):
       self.stream.pause()
     else:
