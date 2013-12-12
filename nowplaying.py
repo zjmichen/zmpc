@@ -170,3 +170,8 @@ class NowPlaying:
       pass
 
     self.update()
+
+  def on_btn_reveal_clicked(self, data):
+    tv_playlist = self.builder.get_object('tv_playlist')
+    lst_playlist = self.builder.get_object('lst_playlist')
+    row = lst_playlist.append(['asdf'])
