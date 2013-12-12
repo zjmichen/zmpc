@@ -109,7 +109,6 @@ class App(Gtk.Application):
     self.add_action(quit_action)
 
   def toggle_stream(self, action, parameter):
-    print(dir(action))
     if (self.stream.streaming):
       self.stream.pause()
     else:
