@@ -1,8 +1,8 @@
-import requests, os, threading, time
+import requests, os, threading, time, urllib.parse
 from gi.repository import Gtk, GObject
 from gi.repository.GdkPixbuf import Pixbuf
 from xml.etree import ElementTree as ET
-from mpd import ConnectionError
+from mpd import ConnectionError, CommandError
 
 class NowPlaying:
   UPDATE_INTERVAL = 0.5
@@ -31,20 +31,22 @@ class NowPlaying:
     return True
 
   def update_info(self):
+    info = {}
+    status = {}
+
     try:
       info = self.app.mpc.currentsong()
       status = self.app.mpc.status()
     except ConnectionError:
-      info = {
-      'title': 'Not Connected',
-      'artist': '',
-      'album': ''
-      }
-      status = {
-        'state': 'pause',
-        'random': '0',
-        'repeat': '0'
-      }
+      pass
+
+    info['title'] = 'Not Connected' if ('title' not in info) else info['title']
+    info['artist'] = '' if ('artist' not in info) else info['artist']
+    info['album'] = '' if ('album' not in info) else info['album']
+
+    status['state'] = 'pause' if ('state' not in status) else status['state']
+    status['random'] = '0'    if ('random' not in status) else status['random']
+    status['repeat'] = '0'    if ('repeat' not in status) else status['repeat']
 
     lbl_title = self.builder.get_object('lbl_title')
     lbl_title.set_text(info['title'])
@@ -77,7 +79,7 @@ class NowPlaying:
     img_cover = self.builder.get_object('img_cover')
 
     if len(info['album']) > 0:
-      params = { 
+      params = {
         'api_key': self.app.lastfm_key,
         'method': 'album.getinfo'
       }
@@ -87,13 +89,14 @@ class NowPlaying:
 
       url = 'http://ws.audioscrobbler.com/2.0/?'
       for k in params:
-        url += k + '=' + params[k] + '&'
+        url += k + '=' + urllib.parse.quote(params[k]) + '&'
 
       res = requests.get(url)
       xml = ET.fromstring(res.content.decode())
-      cover_url = xml.find("*image[@size='extralarge']")
+      cover_url = xml.find("*image[@size='extralarge']").text
+
       if cover_url != None:
-        img_res = self.fetch_image(cover_url.text)
+        img_res = self.fetch_image(cover_url)
         img_cover.set_from_pixbuf(img_res)
     else:
       img_cover.set_from_icon_name('gtk-missing-image', Gtk.IconSize.BUTTON)
@@ -116,18 +119,17 @@ class NowPlaying:
       self.app.mpc.previous()
     except ConnectionError:
       pass
+    except CommandError:
+      pass
 
     self.update()
 
   def on_tog_play_toggled(self, data):
     do_play = data.get_active()
-    try:
-      if do_play:
-        self.app.mpc.play()
-      else:
-        self.app.mpc.pause()
-    except ConnectionError:
-      pass
+    if do_play:
+      self.app.play()
+    else:
+      self.app.pause()
 
     self.update()
 
@@ -135,6 +137,8 @@ class NowPlaying:
     try:
       self.app.mpc.next()
     except ConnectionError:
+      pass
+    except CommandError:
       pass
 
     self.update()
@@ -145,6 +149,8 @@ class NowPlaying:
       self.app.mpc.random(int(do_random))
     except ConnectionError:
       pass
+    except CommandError:
+      pass
 
     self.update()
 
@@ -154,5 +160,7 @@ class NowPlaying:
       self.app.mpc.repeat(int(do_repeat))
     except ConnectionError:
       pass
-      
+    except CommandError:
+      pass
+
     self.update()
