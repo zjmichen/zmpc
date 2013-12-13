@@ -28,7 +28,7 @@ class NowPlaying:
     tv_playlist.append_column(column)
 
     self.playlist = self.builder.get_object('lst_playlist')
-    self.playlist.append(['asdf'])
+    self.set_playlist(['asdf', 'fdsa'])
 
     self.window.show_all()
 
@@ -127,6 +127,10 @@ class NowPlaying:
       res.close()
 
     return Pixbuf.new_from_file(fname)
+
+  def set_playlist(self, playlist):
+    for track in playlist:
+      self.playlist.append([track])
 
   def on_btn_previous_clicked(self, data):
     try:
