@@ -22,6 +22,14 @@ class NowPlaying:
     self.update()
     GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
 
+    tv_playlist = self.builder.get_object('tv_playlist')
+    renderer = Gtk.CellRendererText()
+    column = Gtk.TreeViewColumn('Playlist', renderer, text=0)
+    tv_playlist.append_column(column)
+
+    self.playlist = self.builder.get_object('lst_playlist')
+    self.playlist.append(['asdf'])
+
     self.window.show_all()
 
   def update(self):
@@ -174,4 +182,11 @@ class NowPlaying:
   def on_btn_reveal_clicked(self, data):
     tv_playlist = self.builder.get_object('tv_playlist')
     lst_playlist = self.builder.get_object('lst_playlist')
-    row = lst_playlist.append(['asdf'])
+
+    visible = tv_playlist.get_property('visible')
+    if visible:
+      tv_playlist.hide()
+    else:
+      tv_playlist.show()
+
+

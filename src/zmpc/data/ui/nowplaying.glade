@@ -4,7 +4,7 @@
   <object class="GtkListStore" id="lst_playlist">
     <columns>
       <!-- column-name test -->
-      <column type="&lt; define a new column &gt;"/>
+      <column type="gchararray"/>
     </columns>
   </object>
   <object class="GtkApplicationWindow" id="win_now_playing">
@@ -216,46 +216,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">3</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="btn_next">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Next</property>
-                <property name="use_underline">True</property>
-                <property name="icon_name">media-skip-forward</property>
-                <signal name="clicked" handler="on_btn_next_clicked" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="draw">False</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleToolButton" id="tog_shuffle">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Shuffle</property>
-                <property name="use_underline">True</property>
-                <property name="icon_name">media-playlist-shuffle</property>
-                <signal name="toggled" handler="on_tog_shuffle_toggled" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
               </packing>
             </child>
           </object>
@@ -266,7 +226,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTreeView" id="treeview1">
+          <object class="GtkTreeView" id="tv_playlist">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="model">lst_playlist</property>
