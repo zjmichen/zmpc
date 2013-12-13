@@ -67,7 +67,7 @@ class App(Gtk.Application):
       self.mpd_server = parts[0]
 
     self.mpd_port = os.getenv('MPD_PORT', 6600)
-    self.mpd_stream_uri = 'http://' + self.mpd_server + ':' + str(self.mpd_port) + '/'
+    self.mpd_stream_uri = 'http://' + self.mpd_server + ':8004/'
 
     self.mpc = MPDClient()
     self.mpc.timeout = 10
