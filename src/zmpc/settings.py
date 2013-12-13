@@ -17,6 +17,8 @@ class Settings:
     ent_port.set_text(str(self.app.mpd_port))
     ent_password = self.builder.get_object("entry_password")
     ent_password.set_text(self.app.mpd_pass)
+    ent_stream_uri = self.builder.get_object("entry_stream_uri")
+    ent_stream_uri.set_text(self.app.mpd_stream_uri)
 
     self.window.show_all()
 
