@@ -1,2 +1,8 @@
 __pycache__
 *.pyc
+*.sublime*
+*.vim
+.DS_Store
+*.pyc
+build
+dist

@@ -4,13 +4,14 @@ import os, re, sys, threading
 from gi.repository import Gtk, GLib, GObject, Gio
 from mpd import MPDClient
 
-from nowplaying import NowPlaying
-from settings import Settings
-from stream import Stream
+from zmpc.nowplaying import NowPlaying
+from zmpc.settings import Settings
+from zmpc.stream import Stream
 
 class App(Gtk.Application):
   def __init__(self):
     Gtk.Application.__init__(self, application_id='com.zackmichener.zmpc', register_session=True)
+    self.appdir = os.path.dirname(__file__)
     self.connected = False;
 
   def connect(self):
@@ -80,7 +81,6 @@ class App(Gtk.Application):
     if not os.path.exists(self.cache_dir):
       os.makedirs(self.cache_dir)
 
-    self.mpd_stream_uri = 'http://pi.zackmichener.net:8004/'
     self.stream = Stream(self.mpd_stream_uri)
 
   def create_menu(self):
