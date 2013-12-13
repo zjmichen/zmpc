@@ -39,6 +39,8 @@ class NowPlaying:
       status = self.app.mpc.status()
     except ConnectionError:
       pass
+    except ProtocolError:
+      sleep(2)
 
     info['title'] = 'Not Connected' if ('title' not in info) else info['title']
     info['artist'] = '' if ('artist' not in info) else info['artist']
