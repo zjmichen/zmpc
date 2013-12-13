@@ -127,8 +127,3 @@ class App(Gtk.Application):
     self.stream.stop()
     super.quit()
 
-if __name__ == "__main__":
-  GObject.threads_init()
-  app = App()
-  status = app.run(None)
-  sys.exit(status)
