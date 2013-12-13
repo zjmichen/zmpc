@@ -89,14 +89,15 @@ class App(Gtk.Application):
     menu.append("Quit", "app.quit")
 
     stream_item = Gio.MenuItem.new("Stream", "app.stream")
-    stream_item.set_action_and_target_value("app.stream", GLib.Variant.new_boolean("true"))
+    stream_item.set_action_and_target_value("app.stream", GLib.Variant.new_boolean(False))
 
     menu.prepend_item(stream_item)
     self.set_app_menu(menu)
 
     stream_action = Gio.SimpleAction.new_stateful("stream",
         GLib.VariantType.new('b'),
-        GLib.Variant.new_boolean('true'))
+        GLib.Variant.new_boolean(False))
+
     stream_action.connect("activate", self.toggle_stream)
     self.add_action(stream_action)
 
@@ -110,8 +111,10 @@ class App(Gtk.Application):
 
   def toggle_stream(self, action, parameter):
     if (self.stream.streaming):
-      self.stream.pause()
+      action.change_state(GLib.Variant.new_boolean(True))
+      self.stream.stop()
     else:
+      action.change_state(GLib.Variant.new_boolean(False))
       self.stream.play()
 
   def menu_settings(self, action, parameter):
