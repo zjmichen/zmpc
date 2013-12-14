@@ -19,9 +19,6 @@ class NowPlaying:
     self.window = self.builder.get_object("win_now_playing")
     self.window.set_application(self.app)
 
-    self.update()
-    GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
-
     tv_playlist = self.builder.get_object('tv_playlist')
     renderer = Gtk.CellRendererText()
     column = Gtk.TreeViewColumn('Playlist', renderer, text=0)
@@ -29,6 +26,9 @@ class NowPlaying:
 
     self.playlist = self.builder.get_object('lst_playlist')
     self.set_playlist(['asdf', 'fdsa'])
+
+    self.update()
+    GObject.timeout_add(self.UPDATE_INTERVAL*1000, self.update)
 
     self.window.show_all()
 
@@ -41,12 +41,16 @@ class NowPlaying:
   def update_info(self):
     info = {}
     status = {}
+    playlist = []
 
     try:
       info = self.app.mpc.currentsong()
       status = self.app.mpc.status()
+      playlist = self.app.mpc.playlist()
     except ConnectionError:
       pass
+
+    print(playlist)
 
     info['title'] = 'Not Connected' if ('title' not in info) else info['title']
     info['artist'] = '' if ('artist' not in info) else info['artist']
@@ -89,6 +93,9 @@ class NowPlaying:
 
     self.update_cover(info)
 
+    if self.playlist != playlist:
+      self.set_playlist(playlist)
+
   def update_cover(self, info):
     img_cover = self.builder.get_object('img_cover')
 
@@ -129,6 +136,7 @@ class NowPlaying:
     return Pixbuf.new_from_file(fname)
 
   def set_playlist(self, playlist):
+    self.playlist.clear()
     for track in playlist:
       self.playlist.append([track])
 
