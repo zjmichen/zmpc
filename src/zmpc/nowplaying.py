@@ -9,6 +9,7 @@ class NowPlaying:
   playing = False
   shuffle = False
   repeat = False
+  playlist = []
 
   def __init__(self, app):
     self.app = app
@@ -24,7 +25,7 @@ class NowPlaying:
     column = Gtk.TreeViewColumn('Playlist', renderer, text=0)
     tv_playlist.append_column(column)
 
-    self.playlist = self.builder.get_object('lst_playlist')
+    self.lst_playlist = self.builder.get_object('lst_playlist')
     self.set_playlist(['asdf', 'fdsa'])
 
     self.update()
@@ -49,8 +50,6 @@ class NowPlaying:
       playlist = self.app.mpc.playlist()
     except ConnectionError:
       pass
-
-    print(playlist)
 
     info['title'] = 'Not Connected' if ('title' not in info) else info['title']
     info['artist'] = '' if ('artist' not in info) else info['artist']
@@ -93,7 +92,7 @@ class NowPlaying:
 
     self.update_cover(info)
 
-    if self.playlist != playlist:
+    if set(self.playlist) != set(playlist):
       self.set_playlist(playlist)
 
   def update_cover(self, info):
@@ -136,9 +135,10 @@ class NowPlaying:
     return Pixbuf.new_from_file(fname)
 
   def set_playlist(self, playlist):
-    self.playlist.clear()
+    self.playlist = playlist
+    self.lst_playlist.clear()
     for track in playlist:
-      self.playlist.append([track])
+      self.lst_playlist.append([track])
 
   def on_btn_previous_clicked(self, data):
     try:
